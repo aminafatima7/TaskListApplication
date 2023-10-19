@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Task List App</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <style>
+        body {
+            background-color: rgb(244, 198, 113);
+        }
+
+        #app {
+            font-family: Arial, sans-serif;
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        input[type="text"] {
+            width: 60%;
+            padding: 8px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        button {
+            padding: 8px 12px;
+            margin-top: 10px;
+            background-color: black;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <h1>Task List</h1>
+        <ul>
+            <li v-for="(task, index) in filteredTasks" :key="index">
+                <input type="checkbox" v-model="task.completed">
+                <span :style="{ textDecoration: task.completed ? 'line-through' : 'none' }">{{ task.title }}</span>
+                <button @click="deleteTask(index)">Delete</button>
+            </li>
+        </ul>
+        <input type="text" v-model="newTask" placeholder="Add a new task...">
+        <button @click="addTask">Add Task</button>
+        <select v-model="filter">
+            <option value="all">All</option>
+            <option value="completed">Completed</option>
+            <option value="incomplete">Incomplete</option>
+        </select>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                tasks: [
+                    { title:'Go to gym', completed: false },
+                    { title: 'Buy grocery', completed: true },
+                    { title: 'Finish homework', completed: false }
+                ],
+                newTask: '',
+                filter: 'all'
+            },
+            computed: {
+                filteredTasks: function () {
+                    if (this.filter === 'all') {
+                        return this.tasks;
+                    } else if (this.filter === 'completed') {
+                        return this.tasks.filter(task => task.completed);
+                    } else if (this.filter === 'incomplete') {
+                        return this.tasks.filter(task => !task.completed);
+                    }
+                    return this.tasks;
+                }
+            },
+            methods: {
+                addTask: function () {
+                    if (this.newTask.trim() !== '') {
+                        this.tasks.push({ title: this.newTask, completed: false });
+                        this.newTask = '';
+                    } else {
+                        alert('Task title cannot be empty!');
+                    }
+                },
+                deleteTask: function (index) {
+                    this.tasks.splice(index, 1);
+                }
+            }
+        });
+    </script>
+
+</body>
+
+</html>
